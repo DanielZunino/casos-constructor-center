@@ -134,7 +134,18 @@ label.f input,label.f select,label.f textarea{border:1px solid var(--line);borde
 label.f textarea{min-height:120px;resize:vertical}
 #lb{width:min(1000px,calc(100vw - 24px))}
 #lb img{width:100%;max-height:75vh;object-fit:contain;background:#000;display:block}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:22px 16px;text-align:center;display:flex;flex-direction:column;gap:4px;cursor:pointer;color:var(--mut);font-size:13.5px}
+.drop b{color:var(--ink);font-size:15px}.drop.over{border-color:var(--brand2);background:var(--blubg)}
+.flist{display:flex;flex-direction:column;gap:6px}.fi{display:flex;gap:10px;align-items:center;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 10px}.fi span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fi button{border:0;background:none;color:var(--red);font-size:13px}
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}.cmain{display:flex;flex-direction:column;gap:22px;min-width:0}
+.aside{position:sticky;top:14px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 28px);overflow:auto;padding:14px;border-top:4px solid var(--brand2)}
+.aside h3{font-size:15px}.ap{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.ap .who{display:flex;justify-content:space-between;gap:8px;font-size:13px}.ap .who b{color:var(--ink)}.ap .when{color:var(--mut);font-family:var(--f-mono);font-size:11.5px;white-space:nowrap}
+.ap .tx{font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}.ap .files{display:flex;flex-wrap:wrap;gap:6px}
+.ap .files .thumb{width:64px;height:64px;aspect-ratio:auto}.fchip{font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--card);cursor:pointer}
+@media (max-width:1000px){.cgrid{grid-template-columns:1fr}.aside{position:static;max-height:none}}
 @media (max-width:720px){.cols{grid-template-columns:1fr}.kv{grid-template-columns:1fr}.kv dt{font-weight:600}.case{grid-template-columns:6px 1fr}.case .side{grid-column:2;align-items:flex-start;text-align:left;padding:0 0 14px}}
+@media print{.cgrid{grid-template-columns:1fr}.aside{position:static;max-height:none}.drop{display:none}}
 @media print{@page{size:A4 landscape;margin:10mm}:root{--bg:#fff;--card:#fff;--ink:#18202e;--mut:#5a6477;--line:#d6dbe4;--soft:#eceff4}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:#fff;font-size:12.5px}.topbar{background:#14306e!important}main{padding:12px 0}footer{padding:8px}.cta,.no-print,.back,dialog,.bar input,.f-btn{display:none!important}.tl-wrap{overflow:visible}.tl{min-width:0;flex-wrap:wrap;row-gap:18px}.tl:before{display:none}.ev{width:auto;flex:1 1 0;min-width:0;padding:0 4px}.tl{flex-wrap:nowrap}.sec-h>.meta{display:none}.card,.item,.fs,.person,.case,.sec{break-inside:avoid}.people{grid-template-columns:repeat(4,1fr)}.cols{grid-template-columns:1fr 1fr}.case,.top,.stat{box-shadow:none}.more,.open{display:none}}
 .pdf-print-note{font-size:12.5px;color:var(--mut)}
 </style>
@@ -151,20 +162,21 @@ label.f textarea{min-height:120px;resize:vertical}
 <dialog id="lb"><div class="mh"><div id="lb-h" style="font-weight:700"></div><button class="x" data-close aria-label="Cerrar">×</button></div><img id="lb-img" alt=""><div class="mb meta" id="lb-cap"></div></dialog>
 <dialog id="ap">
   <form id="apf">
-    <div class="mh"><div><h3 style="font-size:18px">Aportar información</h3><div class="meta" style="font-size:13px">Tu aporte llega directo al asesor a cargo del caso.</div></div><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+    <div class="mh"><div><h3 style="font-size:18px">Subir información</h3><div class="meta" style="font-size:13px">Queda registrado en el expediente con tu nombre, la fecha y la hora.</div></div><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
     <div class="mb">
-      <label class="f">Tu nombre<input id="ap-nom" required autocomplete="name"></label>
+      <div class="meta" style="font-size:14px">Aporta como: <b id="ap-quien" style="color:var(--ink)"></b></div>
       <label class="f">Fecha del hecho (si aplica)<input id="ap-fecha" type="date"></label>
-      <label class="f">Qué quieres informar<textarea id="ap-txt" required placeholder="Qué pasó, quién estaba, frases textuales…"></textarea></label>
-      <div class="meta" style="font-size:13px">Las fotos o documentos envíalos por WhatsApp o correo después de enviar este aporte.</div>
+      <label class="f">Qué quieres informar<textarea id="ap-txt" placeholder="Qué pasó, quién estaba, frases textuales…"></textarea></label>
+      <div class="drop" id="ap-drop" tabindex="0" role="button" aria-label="Agregar archivos"><b>Arrastra aquí fotos, videos o documentos</b><span>o toca para elegirlos</span><input type="file" id="ap-files" multiple hidden></div>
+      <div id="ap-list" class="flist"></div>
+      <div id="ap-err" style="color:var(--red);font-size:13.5px"></div>
     </div>
-    <div class="mf"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn" data-via="mail">Enviar por correo</button><button type="submit" class="btn pri" data-via="wa" id="ap-wa">Enviar por WhatsApp</button></div>
+    <div class="mf"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn pri" id="ap-ok">Subir información</button></div>
   </form>
 </dialog>
 
 <script>
 (function(){
-const CONTACTO={correo:"zunino.prevencion@gmail.com",whatsapp:""};
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==='class')e.className=v;else if(x==='style')e.style.cssText=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else if(v!=null&&v!==false)e.setAttribute(x,v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)))}return e};
 const TIPOS={karin:{n:'Ley Karin',c:'var(--pur)',bg:'var(--purbg)'},accidente:{n:'Accidente',c:'var(--red)',bg:'var(--redbg)'},incidente:{n:'Incidente',c:'var(--amb)',bg:'var(--ambbg)'},investigacion:{n:'Investigación',c:'var(--blu)',bg:'var(--blubg)'},otro:{n:'Otro',c:'var(--gry)',bg:'var(--soft)'}};
@@ -174,7 +186,6 @@ const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','di
 const app=$('#app');
 document.addEventListener('click',e=>{const c=e.target.closest('[data-close]');if(c)c.closest('dialog').close()});
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
-if(!CONTACTO.whatsapp)$('#ap-wa').hidden=true;
 
 /* ---- cripto ---- */
 const b64=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))};
@@ -248,7 +259,7 @@ function renderCaso(C,back){
   app.replaceChildren(...[
     back?el('a',{class:'back',href:back},'← Volver a todos los casos'):null,
     el('header',{class:'card top'},
-      el('div',{class:'top-row'},el('div',{style:'min-width:0'},el('h1',{},i.titulo),el('div',{class:'meta'},[i.empresa,i.sucursal,i.apertura?'Abierto el '+i.apertura:''].filter(Boolean).join(' · '))),el('div',{class:'bar no-print'},el('button',{class:'btn',onclick:pdf},'⬇ Descargar PDF'),el('button',{class:'btn pri',id:'btn-aportar',onclick:()=>{$('#apf').reset();if(i.usuario)$('#ap-nom').value=i.usuario;openDlg($('#ap'))}},'+ Aportar información'))),
+      el('div',{class:'top-row'},el('div',{style:'min-width:0'},el('h1',{},i.titulo),el('div',{class:'meta'},[i.empresa,i.sucursal,i.apertura?'Abierto el '+i.apertura:''].filter(Boolean).join(' · '))),el('div',{class:'bar no-print'},el('button',{class:'btn',onclick:pdf},'⬇ Descargar PDF'),el('button',{class:'btn pri',id:'btn-aportar',onclick:()=>abrirSubir()},'⬆ Subir información'))),
       el('div',{class:'tags'},el('span',{class:'chip',style:'background:var(--redbg);color:var(--red)'},i.clasificacion||'CONFIDENCIAL'),el('span',{class:'chip',style:'background:var(--ambbg);color:var(--amb)'},'Estado: '+(i.estado||'Abierto')),i.actualizado?el('span',{class:'meta',style:'font-size:13px'},'Actualizado: '+i.actualizado):null,i.usuario?el('span',{class:'chip',style:'background:var(--blubg);color:var(--blu)'},'Acceso de: '+i.usuario):null),
       i.resumen?el('p',{class:'resumen'},i.resumen):null,
       i.alerta?el('div',{class:'alerta'},el('b',{},'Ojo: '),i.alerta):null),
@@ -258,16 +269,72 @@ function renderCaso(C,back){
       el('div',{class:'legend'},...Object.entries(CATS).filter(([k])=>used.includes(k)).map(([k,v])=>el('span',{style:'--c:'+v.c},el('i'),v.n)))),
     (C.vias||[]).length?el('section',{class:'sec'},el('h2',{},'Plan de acción'),el('div',{class:'cols'},...C.vias.map(v=>el('div',{class:'card via',style:'--c:'+v.color},el('h3',{},v.titulo),v.nota?el('p',{class:'hint'},v.nota):null,...chk(v.acciones||[],v.color))))):null,
     (C.pendientes||[]).length?el('section',{class:'sec'},el('h2',{},'Pendiente por confirmar'),el('div',{class:'card via',style:'--c:var(--amb)'},...chk(C.pendientes,'var(--amb)'))):null,
-    el('section',{class:'sec'},el('h2',{},'Evidencia'),fotos.length?el('div',{class:'gal'},...fotos):el('div',{class:'empty'},'Aún no hay fotos. Si tienes alguna, usa «Aportar información».')),
+    el('section',{class:'sec'},el('h2',{},'Evidencia'),fotos.length?el('div',{class:'gal'},...fotos):el('div',{class:'empty'},'Aún no hay fotos. Si tienes alguna, usa «Subir información».')),
     (C.flujo||[]).length?el('section',{class:'sec'},el('h2',{},C.flujoTitulo||'Próximos pasos'),el('div',{class:'flow'},...C.flujo.map(s=>el('div',{class:'fs'},el('b',{},s.paso),s.texto)))):null,
-    el('div',{class:'cta'},el('div',{},el('b',{style:'font-size:16px'},'¿Tienes información sobre este caso?'),el('div',{class:'meta'},'Relatos, fechas, testigos o fotos. Todo se trata de forma confidencial.')),el('button',{class:'btn pri',onclick:()=>{$('#apf').reset();if(i.usuario)$('#ap-nom').value=i.usuario;openDlg($('#ap'))}},'+ Aportar información'))
+    el('div',{class:'cta'},el('div',{},el('b',{style:'font-size:16px'},'¿Tienes información sobre este caso?'),el('div',{class:'meta'},'Relatos, fechas, testigos, fotos o documentos. Queda registrado con tu nombre.')),el('button',{class:'btn pri',onclick:()=>abrirSubir()},'⬆ Subir información'))
   ].filter(Boolean));
-  $('#apf').onsubmit=e=>{e.preventDefault();const via=e.submitter&&e.submitter.dataset.via;
-    const t=['APORTE · '+i.titulo,'De: '+$('#ap-nom').value.trim(),$('#ap-fecha').value?'Fecha del hecho: '+fmt($('#ap-fecha').value):'','',$('#ap-txt').value.trim()].filter((x,ix)=>x||ix===3).join('\n');
-    if(via==='wa'&&CONTACTO.whatsapp)window.location.href='https://wa.me/'+CONTACTO.whatsapp+'?text='+encodeURIComponent(t);
-    else window.location.href='mailto:'+CONTACTO.correo+'?subject='+encodeURIComponent('Aporte · '+i.titulo)+'&body='+encodeURIComponent(t);
-    $('#ap').close();};
+  montarAportes(C,i);
   window.scrollTo(0,0);
+}
+
+/* ---- aportes (Google Drive) ---- */
+let FILES=[];
+function abrirSubir(){$('#apf').reset();FILES=[];pintarFiles();$('#ap-err').textContent='';$('#ap-quien').textContent=(USER&&USER.nombre)||'';openDlg($('#ap'))}
+function pintarFiles(){$('#ap-list').replaceChildren(...FILES.map((f,ix)=>el('div',{class:'fi'},el('span',{},'📎 '+f.name),el('small',{class:'meta'},(f.size/1048576).toFixed(1)+' MB'),el('button',{type:'button',onclick:()=>{FILES.splice(ix,1);pintarFiles()}},'Quitar'))))}
+function agregar(list){for(const f of list)FILES.push(f);pintarFiles()}
+(function(){const d=$('#ap-drop'),inp=$('#ap-files');
+  d.addEventListener('click',()=>inp.click());d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click()}});
+  inp.addEventListener('change',()=>{agregar(inp.files);inp.value=''});
+  ['dragenter','dragover'].forEach(t=>d.addEventListener(t,e=>{e.preventDefault();d.classList.add('over')}));
+  ['dragleave','drop'].forEach(t=>d.addEventListener(t,e=>{e.preventDefault();d.classList.remove('over')}));
+  d.addEventListener('drop',e=>agregar(e.dataTransfer.files));
+  document.getElementById('ap').addEventListener('dragover',e=>e.preventDefault());
+  document.getElementById('ap').addEventListener('drop',e=>{e.preventDefault();if(!d.contains(e.target))agregar(e.dataTransfer.files)});
+})();
+async function achicar(f){
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size<1.2e6)return f;
+  try{const bmp=await createImageBitmap(f);const k=Math.min(1,1800/Math.max(bmp.width,bmp.height));const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));return b&&b.size<f.size?new File([b],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):f}catch(e){return f}}
+const aB64=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=no;r.readAsDataURL(f)});
+function api(){return USER&&USER.api&&USER.token?{url:USER.api,t:USER.token}:null}
+function montarAportes(C,i){
+  const kids=[...app.children];const head=kids.filter(n=>n.classList.contains('back')||n.classList.contains('top'));
+  const main=el('div',{class:'cmain'},...kids.filter(n=>!head.includes(n)));
+  const lista=el('div',{style:'display:flex;flex-direction:column;gap:10px'},el('div',{class:'meta',style:'font-size:13px'},'Cargando aportes…'));
+  const aside=el('aside',{class:'card aside'},el('div',{class:'sec-h'},el('h3',{},'Aportes de información'),el('button',{class:'btn no-print',style:'padding:4px 10px;font-size:13px',onclick:abrirSubir},'⬆ Subir')),lista);
+  app.replaceChildren(...head,el('div',{class:'cgrid'},main,aside));
+  const A=api();
+  if(!A){lista.replaceChildren(el('div',{class:'meta',style:'font-size:13px'},'Los aportes todavía no están activados.'));$('#ap-ok').disabled=true;return}
+  $('#ap-ok').disabled=false;
+  async function cargar(){
+    try{const r=await fetch(A.url+'?t='+encodeURIComponent(A.t)+'&caso='+encodeURIComponent(C.id||i.id||''),{cache:'no-store'});const j=await r.json();if(!j.ok)throw 0;
+      const ap=(j.aportes||[]).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+      lista.replaceChildren(...(ap.length?ap.map(a=>{const d=new Date(a.fecha);const p=n=>String(n).padStart(2,'0');
+        return el('div',{class:'ap'},el('div',{class:'who'},el('b',{},a.persona||'—'),el('span',{class:'when'},isNaN(d)?'':p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes()))),
+          a.fechaHecho?el('div',{class:'meta',style:'font-size:12.5px'},'Fecha del hecho: '+fmt(a.fechaHecho)):null,
+          a.texto?el('div',{class:'tx'},a.texto):null,
+          (a.archivos||[]).length?el('div',{class:'files'},...a.archivos.map(f=>archivo(f,a,A))):null)}):[el('div',{class:'meta',style:'font-size:13px'},'Aún no hay aportes. Usa «Subir información» para agregar el primero.')]));
+    }catch(e){lista.replaceChildren(el('div',{class:'meta',style:'font-size:13px'},'No se pudieron cargar los aportes. Recarga la página.'))}
+  }
+  cargar();
+  $('#apf').onsubmit=async e=>{e.preventDefault();const ok=$('#ap-ok'),err=$('#ap-err');err.textContent='';
+    const texto=$('#ap-txt').value.trim();if(!texto&&!FILES.length){err.textContent='Escribe algo o agrega al menos un archivo.';return}
+    ok.disabled=true;
+    try{const archivos=[];let total=0;
+      for(let k=0;k<FILES.length;k++){ok.textContent='Preparando '+(k+1)+' de '+FILES.length+'…';const f=await achicar(FILES[k]);total+=f.size;if(total>40e6)throw new Error('Los archivos pesan demasiado (máx. 40 MB por envío). Sube menos a la vez.');archivos.push({nombre:f.name,tipo:f.type||'application/octet-stream',b64:await aB64(f)})}
+      ok.textContent='Subiendo…';
+      const r=await fetch(A.url,{method:'POST',body:JSON.stringify({t:A.t,caso:C.id||i.id||'',casoNombre:i.titulo,persona:USER.nombre,fechaHecho:$('#ap-fecha').value,texto,archivos})});
+      const j=await r.json();if(!j.ok)throw new Error('No se pudo guardar. Intenta de nuevo.');
+      $('#ap').close();cargar();
+    }catch(x){err.textContent=(x&&x.message)||'No se pudo subir. Revisa tu conexión e intenta de nuevo.'}
+    finally{ok.disabled=false;ok.textContent='Subir información'}};
+}
+function archivo(f,a,A){
+  const esImg=(f.tipo||'').startsWith('image/');
+  const traer=async()=>{const r=await fetch(A.url+'?t='+encodeURIComponent(A.t)+'&f='+encodeURIComponent(f.id));const j=await r.json();if(!j.ok)throw 0;return 'data:'+j.tipo+';base64,'+j.b64};
+  if(esImg){const img=el('img',{alt:f.nombre,loading:'lazy'});const b=el('button',{class:'thumb',title:f.nombre},img);
+    traer().then(src=>{img.src=src;b.onclick=()=>{$('#lb-h').textContent='Aporte de '+(a.persona||'');$('#lb-img').src=src;$('#lb-cap').textContent=f.nombre;openDlg($('#lb'))}}).catch(()=>{b.textContent='⚠'});return b}
+  return el('button',{class:'fchip',onclick:async()=>{try{const src=await traer();const bl=await (await fetch(src)).blob();const u=URL.createObjectURL(bl);const l=el('a',{href:u,download:f.nombre});document.body.append(l);l.click();l.remove()}catch(e){}}},'📄 '+f.nombre);
 }
 
 /* ---- sesión con usuario y clave ---- */
@@ -308,7 +375,7 @@ async function route(){
   if(!USER){renderLogin();return}
   try{
     if(h.startsWith('caso/')){const c=(USER.casos||[]).find(x=>x.id===h.slice(5));if(!c){location.hash='casos';return}
-      const C=await abrir(c.id,c.llave);C.usuario=USER.nombre;renderCaso(C,(USER.casos||[]).length>1?'#casos':null);return}
+      const C=await abrir(c.id,c.llave);C.usuario=USER.nombre;C.id=c.id;renderCaso(C,(USER.casos||[]).length>1?'#casos':null);return}
     if((USER.casos||[]).length===1&&h!=='casos'){location.hash='caso/'+USER.casos[0].id;return}
     renderPortal(USER);
   }catch(e){gate('No se pudo abrir la información. Recarga la página o vuelve a ingresar.')}
