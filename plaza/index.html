@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Investigación de Incidente - Constructora Plaza</title>
+<style>
+:root{--azul:#12355b;--acento:#e8731a;--fondo:#f4f6f9;--ok:#2e7d32;--mal:#c62828}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--fondo);color:#1c2733;overflow-y:scroll}
+header{background:var(--azul);color:#fff;padding:16px;border-bottom:5px solid var(--acento)}
+header h1{margin:0;font-size:19px}header p{margin:4px 0 0;font-size:13px;opacity:.85}
+nav{display:flex;gap:6px;overflow-x:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;box-shadow:0 1px 4px #0002}
+nav a{flex:0 0 auto;padding:9px 13px;border-radius:20px;background:#e9eef4;color:var(--azul);text-decoration:none;font-size:14px;font-weight:600}
+main{max-width:920px;margin:0 auto;padding:12px}
+section{background:#fff;border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px #0001;scroll-margin-top:60px}
+h2{margin:0 0 6px;color:var(--azul);font-size:18px;border-left:5px solid var(--acento);padding-left:10px}
+.ayuda{font-size:13px;color:#5b6b7a;margin:0 0 12px}
+.etq{display:inline-block;background:var(--mal);color:#fff;border-radius:4px;padding:2px 8px;font-size:12px;font-weight:700;margin-right:4px}
+.etq.ok{background:var(--ok)}
+label.c{display:block;font-size:13px;font-weight:700;color:var(--azul);margin:10px 0 4px}
+input[type=text],input[type=date],input[type=time],select,textarea{width:100%;font:inherit;font-size:15px;padding:9px;border:1px solid #b8c4d0;border-radius:6px;background:#fff}
+textarea{min-height:78px;resize:vertical}
+.fila{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid #dde4ec;border-radius:8px;margin:6px 0;cursor:pointer;font-size:14px;line-height:1.35}
+.chk input{width:22px;height:22px;flex:0 0 22px;margin:0;accent-color:var(--ok)}
+.chk:has(input:checked){background:#e8f5e9;border-color:#9ccc9f}
+h3{margin:16px 0 4px;font-size:15px;color:var(--azul)}
+table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
+th,td{padding:6px;border-bottom:1px solid #e3e8ee;text-align:center;vertical-align:middle}
+th:first-child,td:first-child{text-align:left}
+th{background:#eef2f7;color:var(--azul);font-size:13px}
+td input,td select{padding:7px;font-size:14px}
+td:first-child input{text-align:left}td input{text-align:center}
+.tw{overflow-x:auto}.tw table{min-width:640px}
+.mal{border-color:var(--mal)!important;background:#ffebee!important}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:11px 16px;font-weight:700}
+.b1{background:var(--acento);color:#fff}.b2{background:var(--azul);color:#fff}.b3{background:#e9eef4;color:var(--azul)}
+.x{background:#ffebee;color:var(--mal);padding:6px 10px}
+.linea{display:flex;overflow-x:auto;padding:28px 0 8px;position:relative;min-height:150px}
+.linea:before{content:"";position:absolute;left:0;right:0;top:42px;height:4px;background:var(--azul)}
+.hito{flex:0 0 190px;padding:0 6px;text-align:center}
+.hito i{display:block;width:16px;height:16px;border-radius:50%;background:var(--acento);margin:0 auto 10px;border:3px solid #fff;box-shadow:0 0 0 2px var(--azul);position:relative}
+.hito input{margin-bottom:5px;text-align:center}.hito textarea{min-height:60px}
+.fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.fotos div{position:relative;background:#eef2f7;border-radius:8px;overflow:hidden;height:130px}
+.fotos img{width:100%;height:100%;object-fit:cover;display:block}
+.fotos button{position:absolute;top:4px;right:4px;padding:3px 8px}
+.barra{position:sticky;bottom:0;background:#fff;padding:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;box-shadow:0 -2px 6px #0002}
+#estado{font-size:12px;color:#5b6b7a;text-align:center;padding:4px}
+footer{text-align:center;font-size:12px;color:#7a8794;padding:14px}
+@media print{nav,.barra,button,#estado{display:none!important}header,.etq{-webkit-print-color-adjust:exact;print-color-adjust:exact}section{break-inside:avoid;box-shadow:none;border:1px solid #ccd}}
+</style></head><body>
+<header><h1>Investigación de Incidente de Alto Potencial</h1>
+<p>Constructora Plaza · Caída de canasto con tecle por corte de cable</p></header>
+<nav><a href="#s1">Datos</a><a href="#s2">Acciones inmediatas</a><a href="#s3">Personas</a><a href="#s4">Línea de tiempo</a><a href="#s5">Equipo</a><a href="#s6">Evidencia</a><a href="#s7">Causas</a><a href="#s8">Medidas</a><a href="#s9">Cierre</a></nav>
+<div id="login" style="position:fixed;inset:0;background:#12355b;z-index:99;display:flex;align-items:center;justify-content:center;padding:16px">
+<div style="background:#fff;border-radius:12px;padding:22px;width:100%;max-width:340px;border-top:6px solid #e8731a">
+<h2 style="margin-bottom:12px">Ingreso</h2><p class="ayuda">Investigación de incidente · Constructora Plaza</p>
+<label class="c">Usuario</label><input type="text" id="lu" autocomplete="username">
+<label class="c">Clave</label><input type="password" id="lc" autocomplete="current-password">
+<p id="lm" style="color:#c62828;font-size:13px;min-height:18px;margin:8px 0"></p>
+<button class="b1" id="lb" style="width:100%">Ingresar</button></div></div>
+<main>
+
+<section id="s1"><h2>1. Datos del evento</h2>
+<p class="ayuda">Complete cada campo. Todo se guarda solo en este dispositivo.</p>
+<span class="etq">ALTO POTENCIAL</span><span class="etq ok">SIN LESIONADOS</span><span class="etq" style="background:#555">DAÑO MATERIAL</span>
+<div class="fila">
+<div><label class="c">Fecha del evento</label><input type="date" data-k="fecha"></div>
+<div><label class="c">Hora aproximada</label><input type="time" data-k="hora"></div>
+<div><label class="c">Obra</label><input type="text" data-k="obra" list="dl_obras"></div>
+<div><label class="c">Empresa a cargo de la faena</label><input type="text" data-k="empresa"></div>
+<div><label class="c">Lugar exacto</label><input type="text" data-k="lugar"></div>
+<div><label class="c">Supervisor o jefe de obra</label><input type="text" data-k="supervisor"></div>
+<div><label class="c">Quién informó el evento</label><input type="text" data-k="informante"></div>
+<div><label class="c">Investigadores</label><input type="text" data-k="investigadores"></div>
+</div>
+<label class="c">Descripción breve de lo ocurrido</label>
+<textarea data-k="descripcion">Durante labores con un tecle se cortó el cable y cayó el canasto que se encontraba suspendido. No hubo personas lesionadas.</textarea>
+<label class="c">Daño material</label><textarea data-k="dano"></textarea>
+<label class="c">¿Había personas bajo la carga o en el radio de caída?</label>
+<select data-k="bajo_carga"><option value="">Seleccione</option><option>No</option><option>Sí</option><option>No se sabe aún</option></select>
+</section>
+
+<section id="s2"><h2>2. Acciones inmediatas</h2>
+<p class="ayuda">Marque lo que ya se hizo.</p>
+<label class="chk"><input type="checkbox" data-k="a1"><span>Se confirmó que no hay personas lesionadas</span></label>
+<label class="chk"><input type="checkbox" data-k="a2"><span>Se acordonó y señalizó el área</span></label>
+<label class="chk"><input type="checkbox" data-k="a3"><span>Se dejó el tecle fuera de servicio y bloqueado</span></label>
+<label class="chk"><input type="checkbox" data-k="a4"><span>Se conservó el cable cortado y las piezas (no se desecharon)</span></label>
+<label class="chk"><input type="checkbox" data-k="a5"><span>Se tomaron fotografías del lugar, del cable y del equipo</span></label>
+<label class="chk"><input type="checkbox" data-k="a6"><span>Se suspendieron los trabajos con izaje en la obra hasta revisar los equipos similares</span></label>
+<label class="chk"><input type="checkbox" data-k="a7"><span>Se informó a la gerencia de Constructora Plaza</span></label>
+<label class="chk"><input type="checkbox" data-k="a8"><span>Se informó al mandante o a la empresa contratista, si corresponde</span></label>
+<label class="chk"><input type="checkbox" data-k="a9"><span>Se evaluó si corresponde aviso a la SEREMI de Salud o a la Inspección del Trabajo</span></label>
+<label class="chk"><input type="checkbox" data-k="a10"><span>Se avisó a la mutualidad (solo si apareciera alguna persona con molestias)</span></label>
+<label class="c">Observaciones de las acciones inmediatas</label><textarea data-k="a_obs"></textarea>
+</section>
+
+<section id="s3"><h2>3. Personas involucradas</h2>
+<p class="ayuda">Escriba el nombre y elija de la nómina de Plaza: se completan solos el cargo y la empresa. El RUT se escribe y se valida solo.</p>
+<div class="tw"><table id="t_personas"><thead><tr><th style="width:24%">Nombre</th><th style="width:15%">RUT</th><th style="width:15%">Cargo</th><th style="width:15%">Empresa</th><th style="width:15%">Rol</th><th style="width:10%">Declaración</th><th style="width:6%"></th></tr></thead><tbody></tbody></table></div>
+<p><button class="b2" data-add="personas">Agregar persona</button></p>
+</section>
+
+<section id="s4"><h2>4. Línea de tiempo</h2>
+<p class="ayuda">Agregue cada hecho en orden, desde antes del evento hasta el cierre.</p>
+<div class="linea" id="linea"></div>
+<p><button class="b2" data-add="hitos">Agregar hecho</button></p>
+</section>
+
+<section id="s5"><h2>5. Equipo involucrado</h2>
+<div class="fila">
+<div><label class="c">Marca y modelo del tecle</label><input type="text" data-k="e_marca"></div>
+<div><label class="c">N° de serie o interno</label><input type="text" data-k="e_serie"></div>
+<div><label class="c">Capacidad nominal (kg)</label><input type="text" inputmode="numeric" data-k="e_cap" data-miles="1"></div>
+<div><label class="c">Peso real de la carga (kg)</label><input type="text" inputmode="numeric" data-k="e_carga" data-miles="1"></div>
+<div><label class="c">Tipo y diámetro del cable</label><input type="text" data-k="e_cable"></div>
+<div><label class="c">Propietario del equipo</label><input type="text" data-k="e_dueno"></div>
+</div>
+<label class="c">Descripción del canasto y de lo que transportaba</label><textarea data-k="e_canasto"></textarea>
+<label class="c">¿El cable cortó por…?</label>
+<select data-k="e_corte"><option value="">Seleccione</option><option>Desgaste o deterioro visible</option><option>Sobrecarga</option><option>Roce con borde filoso</option><option>Corrosión</option><option>Falla del tecle (freno, final de carrera)</option><option>Aún no determinado</option></select>
+</section>
+
+<section id="s6"><h2>6. Evidencia y documentos</h2>
+<p class="ayuda">Marque lo que se obtuvo.</p>
+<label class="chk"><input type="checkbox" data-k="d1"><span>Certificado o informe de inspección del tecle vigente</span></label>
+<label class="chk"><input type="checkbox" data-k="d2"><span>Registro de mantención del tecle</span></label>
+<label class="chk"><input type="checkbox" data-k="d3"><span>Certificado del cable (fabricante y carga de rotura)</span></label>
+<label class="chk"><input type="checkbox" data-k="d4"><span>Registro de inspección previa al uso (lista de chequeo diaria)</span></label>
+<label class="chk"><input type="checkbox" data-k="d5"><span>Procedimiento de trabajo o de izaje y su registro de difusión</span></label>
+<label class="chk"><input type="checkbox" data-k="d6"><span>Análisis de riesgos del trabajo (ART) o permiso de trabajo del día</span></label>
+<label class="chk"><input type="checkbox" data-k="d7"><span>Capacitación y autorización del operador del tecle</span></label>
+<label class="chk"><input type="checkbox" data-k="d8"><span>Inducción de los trabajadores involucrados</span></label>
+<label class="chk"><input type="checkbox" data-k="d9"><span>Declaraciones firmadas de los involucrados y testigos</span></label>
+<label class="chk"><input type="checkbox" data-k="d10"><span>Placa del tecle con la capacidad visible (foto)</span></label>
+<label class="chk"><input type="checkbox" data-k="d11"><span>Cable cortado conservado como evidencia</span></label>
+<h3>Fotografías</h3>
+<input type="file" id="fin" accept="image/*" multiple style="display:none">
+<button class="b2" id="fbtn">Agregar fotografías</button>
+<div class="fotos" id="fotos"></div>
+</section>
+
+<section id="s7"><h2>7. Análisis de causas</h2>
+<p class="ayuda">Marque lo que se confirme y explique con los cinco porqués.</p>
+<h3>Causas inmediatas</h3>
+<label class="chk"><input type="checkbox" data-k="c1"><span>Cable desgastado, dañado o con hilos cortados</span></label>
+<label class="chk"><input type="checkbox" data-k="c2"><span>Carga superior a la capacidad del tecle o del cable</span></label>
+<label class="chk"><input type="checkbox" data-k="c3"><span>Falla del freno o del final de carrera</span></label>
+<label class="chk"><input type="checkbox" data-k="c4"><span>Uso del tecle para una función para la que no estaba diseñado</span></label>
+<label class="chk"><input type="checkbox" data-k="c5"><span>Mala maniobra o forma incorrecta de izar</span></label>
+<h3>Causas básicas</h3>
+<label class="chk"><input type="checkbox" data-k="c6"><span>Falta de mantención o de inspección periódica</span></label>
+<label class="chk"><input type="checkbox" data-k="c7"><span>Inspección previa al uso no realizada o deficiente</span></label>
+<label class="chk"><input type="checkbox" data-k="c8"><span>Operador sin capacitación o autorización</span></label>
+<label class="chk"><input type="checkbox" data-k="c9"><span>Falta de procedimiento de trabajo o análisis de riesgos</span></label>
+<label class="chk"><input type="checkbox" data-k="c10"><span>Supervisión insuficiente</span></label>
+<label class="chk"><input type="checkbox" data-k="c11"><span>Equipo antiguo o no apto, sin control de su vida útil</span></label>
+<h3>Cinco porqués</h3>
+<label class="c">¿Por qué cayó el canasto?</label><textarea data-k="w1"></textarea>
+<label class="c">¿Por qué ocurrió eso?</label><textarea data-k="w2"></textarea>
+<label class="c">¿Por qué ocurrió eso otro?</label><textarea data-k="w3"></textarea>
+<label class="c">¿Por qué no se detectó antes?</label><textarea data-k="w4"></textarea>
+<label class="c">¿Qué falló en el sistema de gestión?</label><textarea data-k="w5"></textarea>
+<label class="c">Causa raíz conclusiva</label><textarea data-k="raiz"></textarea>
+</section>
+
+<section id="s8"><h2>8. Medidas correctivas</h2>
+<div class="tw"><table id="t_medidas"><thead><tr><th style="width:38%">Medida</th><th style="width:20%">Responsable</th><th style="width:16%">Plazo</th><th style="width:20%">Estado</th><th style="width:6%"></th></tr></thead><tbody></tbody></table></div>
+<p><button class="b2" data-add="medidas">Agregar medida</button></p>
+</section>
+
+<section id="s9"><h2>9. Cierre</h2>
+<div class="fila">
+<div><label class="c">Investigación realizada por</label><input type="text" data-k="firma1"></div>
+<div><label class="c">Revisada por</label><input type="text" data-k="firma2"></div>
+<div><label class="c">Fecha de cierre</label><input type="date" data-k="f_cierre"></div>
+</div>
+<label class="c">Conclusiones</label><textarea data-k="concl"></textarea>
+</section>
+</main>
+<div id="estado">Guardado automático en este dispositivo</div>
+<div class="barra">
+<button class="b1" id="bpdf">Descargar PDF</button>
+<button class="b2" id="bjson">Guardar copia</button>
+<button class="b3" id="bload">Cargar copia</button>
+<input type="file" id="jin" accept=".json" style="display:none">
+</div>
+<footer>Integra Prevención SpA · Asesoría en Prevención de Riesgos</footer>
+
+<datalist id="dl_obras"></datalist><datalist id="dl_nombres"></datalist>
+<script>
+var NOM=[];var APPS_URL="";
+var KEY="plaza_incidente_canasto_v1",S={},fotos=[];
+function ld(){try{S=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){S={}}}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(S));est("Guardado "+new Date().toLocaleTimeString("es-CL"))}catch(e){est("No se pudo guardar en este dispositivo; use Guardar copia")}}
+function est(t){document.getElementById("estado").textContent=t}
+function miles(v){v=v.replace(/\D/g,"");return v.replace(/\B(?=(\d{3})+(?!\d))/g,".")}
+function dv(b){var s=1,m=0;for(;b;b=Math.floor(b/10))s=(s+b%10*(9-m++%6))%11;return s?String(s-1):"K"}
+function rutOK(r){r=r.replace(/[^0-9kK]/g,"").toUpperCase();if(r.length<2)return false;return dv(parseInt(r.slice(0,-1),10))==r.slice(-1)}
+function rutFmt(r){r=r.replace(/[^0-9kK]/g,"").toUpperCase();if(r.length<2)return r;return r.slice(0,-1).replace(/\B(?=(\d{3})+(?!\d))/g,".")+"-"+r.slice(-1)}
+function bind(el){var k=el.dataset.k;
+ if(el.type=="checkbox"){el.checked=!!S[k];el.onchange=function(){S[k]=el.checked;sv()}}
+ else{if(S[k]!==undefined)el.value=S[k];el.oninput=function(){if(el.dataset.miles)el.value=miles(el.value);S[k]=el.value;sv()}}}
+document.querySelectorAll("[data-k]").forEach(bind);
+var DEF={personas:["nombre","rut","cargo","empresa","rol","decl"],medidas:["medida","resp","plazo","estado"],hitos:["hora","titulo","detalle"]};
+function addRow(n,v){v=v||{};
+ if(n=="hitos"){var d=document.createElement("div");d.className="hito";
+  d.innerHTML='<i></i><input type="text" placeholder="Fecha y hora"><input type="text" placeholder="Hecho"><textarea placeholder="Detalle"></textarea><button class="x">Quitar</button>';
+  var c=d.querySelectorAll("input,textarea");c[0].value=v.hora||"";c[1].value=v.titulo||"";c[2].value=v.detalle||"";
+  c.forEach(function(e){e.oninput=sa});d.querySelector("button").onclick=function(){d.remove();sa()};
+  document.getElementById("linea").appendChild(d);return}
+ var tb=document.querySelector("#t_"+n+" tbody"),tr=document.createElement("tr"),h="";
+ if(n=="personas"){h='<td><input type="text" list="dl_nombres" placeholder="Escriba para buscar en la nómina"></td><td><input type="text" placeholder="12.345.678-5"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><select><option>Pendiente</option><option>Recibida</option><option>Firmada</option></select></td><td><button class="x">X</button></td>'}
+ else{h='<td><input type="text"></td><td><input type="text"></td><td><input type="date"></td><td><select><option>Pendiente</option><option>En curso</option><option>Cumplida</option></select></td><td><button class="x">X</button></td>'}
+ tr.innerHTML=h;var f=tr.querySelectorAll("input,select"),ks=DEF[n];
+ f.forEach(function(e,i){e.value=v[ks[i]]||e.value;e.oninput=e.onchange=function(){
+  if(n=="personas"&&i==0)nomFill(tr);if(n=="personas"&&i==1){e.value=rutFmt(e.value);e.classList.toggle("mal",e.value.length>3&&!rutOK(e.value))}sa()}});
+ if(n=="personas"&&f[1].value)f[1].classList.toggle("mal",!rutOK(f[1].value));
+ tr.querySelector("button").onclick=function(){tr.remove();sa()};tb.appendChild(tr)}
+function sa(){
+ S.personas=[].map.call(document.querySelectorAll("#t_personas tbody tr"),function(tr){var f=tr.querySelectorAll("input,select");return{nombre:f[0].value,rut:f[1].value,cargo:f[2].value,empresa:f[3].value,rol:f[4].value,decl:f[5].value}});
+ S.medidas=[].map.call(document.querySelectorAll("#t_medidas tbody tr"),function(tr){var f=tr.querySelectorAll("input,select");return{medida:f[0].value,resp:f[1].value,plazo:f[2].value,estado:f[3].value}});
+ S.hitos=[].map.call(document.querySelectorAll("#linea .hito"),function(d){var c=d.querySelectorAll("input,textarea");return{hora:c[0].value,titulo:c[1].value,detalle:c[2].value}});
+ sv()}
+document.querySelectorAll("[data-add]").forEach(function(b){b.onclick=function(){addRow(b.dataset.add,{});sa()}});
+function nomInit(){document.getElementById("dl_nombres").innerHTML="";document.getElementById("dl_obras").innerHTML="";var o={},dn=document.getElementById("dl_nombres"),dob=document.getElementById("dl_obras");
+ NOM.forEach(function(n){var op=document.createElement("option");op.value=n[0];op.label=n[2]+" · "+n[3]+(n[4]!="ACTIVO"?" ("+n[4].toLowerCase()+")":"");dn.appendChild(op);o[n[3]]=1});
+ Object.keys(o).sort().forEach(function(k){var op=document.createElement("option");op.value=k;dob.appendChild(op)})}
+function nomFill(tr){var f=tr.querySelectorAll("input,select"),v=f[0].value.trim().toLowerCase();
+ var m=NOM.filter(function(n){return n[0].toLowerCase()==v})[0];if(m){if(!f[2].value)f[2].value=m[1];if(!f[3].value)f[3].value=m[2];f[0].classList.remove("mal")}}
+function render(){nomInit();
+ ["personas","medidas","hitos"].forEach(function(n){(S[n]||[]).forEach(function(v){addRow(n,v)})});
+ if(!(S.personas||[]).length)addRow("personas");
+ if(!(S.hitos||[]).length){["Antes del evento","Corte del cable y caída del canasto","Aviso y acciones inmediatas","Inicio de la investigación"].forEach(function(t){addRow("hitos",{titulo:t})})}
+ if(!(S.medidas||[]).length)addRow("medidas");
+ drawFotos()}
+function drawFotos(){var c=document.getElementById("fotos");c.innerHTML="";
+ fotos.forEach(function(u,i){var d=document.createElement("div");d.innerHTML='<img src="'+u+'"><button class="x">X</button>';
+  d.querySelector("button").onclick=function(){fotos.splice(i,1);S.fotos=fotos;sv();drawFotos()};c.appendChild(d)})}
+document.getElementById("fbtn").onclick=function(){document.getElementById("fin").click()};
+document.getElementById("fin").onchange=function(e){[].forEach.call(e.target.files,function(f){var r=new FileReader();
+ r.onload=function(){var im=new Image();im.onload=function(){var m=900,s=Math.min(1,m/Math.max(im.width,im.height)),cv=document.createElement("canvas");
+  cv.width=im.width*s;cv.height=im.height*s;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+  fotos.push(cv.toDataURL("image/jpeg",.6));S.fotos=fotos;sv();drawFotos()};im.src=r.result};r.readAsDataURL(f)});e.target.value=""};
+document.getElementById("bpdf").onclick=function(){window.print()};
+document.getElementById("bjson").onclick=function(){var a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:"application/json"}));a.download="Investigacion Incidente Plaza.json";a.click()};
+document.getElementById("bload").onclick=function(){document.getElementById("jin").click()};
+document.getElementById("jin").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();
+ r.onload=function(){try{S=JSON.parse(r.result);sv();location.reload()}catch(x){alert("El archivo no es válido")}};r.readAsText(f)};
+ld();document.querySelectorAll("[data-k]").forEach(bind);fotos=S.fotos||[];render();
+
+async function cargar(u,c){if(!APPS_URL)throw new Error("sin-url");
+ var r=await fetch(APPS_URL+"?u="+encodeURIComponent(u)+"&c="+encodeURIComponent(c));var j=await r.json();
+ if(!j.ok)throw new Error("clave");NOM=j.n;nomInit();document.getElementById("login").style.display="none"}
+async function entrar(){var m=document.getElementById("lm"),u=document.getElementById("lu").value.trim().toLowerCase(),c=document.getElementById("lc").value.trim();
+ m.textContent="";if(!u||!c){m.textContent="Escriba su usuario y su clave";return}
+ m.textContent="Ingresando...";
+ try{await cargar(u,c);try{localStorage.setItem("plaza_u",u);localStorage.setItem("plaza_c",c)}catch(e){}}
+ catch(e){m.textContent=e.message=="clave"?"Usuario o clave incorrectos":e.message=="sin-url"?"Falta conectar la nómina en línea":"No se pudo conectar. Revise su internet e intente de nuevo"}}
+document.getElementById("lb").onclick=entrar;document.getElementById("lc").onkeydown=function(e){if(e.key=="Enter")entrar()};
+(async function(){try{var u=localStorage.getItem("plaza_u"),c=localStorage.getItem("plaza_c");if(u&&c)await cargar(u,c)}catch(e){}})();
+</script></body></html>
